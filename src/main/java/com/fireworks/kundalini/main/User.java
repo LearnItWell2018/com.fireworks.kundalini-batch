@@ -1,4 +1,4 @@
-package com.fireworks.kundalini;
+package com.fireworks.kundalini.main;
 
 import java.util.HashMap;
 import java.util.Map;

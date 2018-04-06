@@ -1,4 +1,4 @@
-package com.fireworks.kundalini;
+package com.fireworks.kundalini.main;
 
 class MyObject {
     private String firstName;

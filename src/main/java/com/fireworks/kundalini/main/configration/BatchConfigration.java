@@ -1,4 +1,4 @@
-package com.fireworks.kundalini;
+package com.fireworks.kundalini.main.configration;
 
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
