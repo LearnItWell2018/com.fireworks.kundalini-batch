@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AppMain {
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
 		String className = AppMain.class.getName();
-		Logger LOG = Logger.getLogger(AppMain.class.getName());
+		Logger LOG = Logger.getLogger(className);
 		LOG.info("Starting Batch " + className);
 		String input = args[0];
 		ObjectMapper mapper = new ObjectMapper();
