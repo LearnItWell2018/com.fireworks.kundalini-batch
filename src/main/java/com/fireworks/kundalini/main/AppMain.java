@@ -6,17 +6,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fireworks.kundalini.main.resource.CustomerAddress;
+import com.fireworks.kundalini.main.resource.CustomerOrder;
 
 @SpringBootApplication
 public class AppMain {
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
 		String className = AppMain.class.getName();
 		Logger LOG = Logger.getLogger(className);
-		LOG.info("Starting Batch " + className);
+		LOG.info("Starting Batch - " + className);
 		String input = args[0];
+		
+		LOG.info("input String is :\n " + input);
 		ObjectMapper mapper = new ObjectMapper();
 
-		User readValue = mapper.readValue(input, User.class);
+		CustomerOrder readValue = mapper.readValue(input, CustomerOrder.class);
 
 		LOG.info("In class " + className);
 
