@@ -19,49 +19,53 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import com.fireworks.kundalini.main.resource.CustomerOrder;
+import com.fireworks.kundalini.task.Mailer;
 
 @Configuration
 @EnableBatchProcessing
 @ComponentScan("com.fireworks.kundalini")
 @PropertySource("batch.properties")
 public class BatchConfigration {
-       @Autowired
-    public JobBuilderFactory jobBuilderFactory;
+	@Autowired
+	public JobBuilderFactory jobBuilderFactory;
 
-    @Autowired
-    public StepBuilderFactory stepBuilderFactory;
+	@Autowired
+	public StepBuilderFactory stepBuilderFactory;
 
-    @Bean
-       public Job importUserJob() {
-              return jobBuilderFactory.get("importUserJob")
-                           .incrementer(new RunIdIncrementer())
-                           .start(stepPDF()).next(stepMail()).build();
-       }
+	@Bean("customerOrder")
+	public CustomerOrder getCustomerOrder() {
+		return new CustomerOrder();
+	}
 
-       private Step stepMail() {
-              return stepBuilderFactory.get("stepRead").tasklet(getResourceDetails()).build();
-       }
+	@Bean
+	public Job importUserJob() {
+		return jobBuilderFactory.get("importUserJob").incrementer(new RunIdIncrementer()).start(stepPDF())
+				.next(stepMail()).build();
+	}
 
-       private Tasklet getResourceDetails() {
-              return null;
-       }
+	private Step stepMail() {
+		return stepBuilderFactory.get("stepRead").tasklet(getResourceDetails()).build();
+	}
 
-       private Step stepPDF() {
-              return stepBuilderFactory.get("stepPDF").<String, CustomerOrder>chunk(1).reader( new ItemReader<String>() {
+	private Tasklet getResourceDetails() {
+		return new Mailer();
+	}
 
-                     public String read() throws Exception, UnexpectedInputException,
-                                  ParseException, NonTransientResourceException {
-                           // TODO Auto-generated method stub
-                           return null;
-                     }
-              }).processor(new ItemProcessor<String, CustomerOrder>() {
+	private Step stepPDF() {
+		return stepBuilderFactory.get("stepPDF").<String, CustomerOrder>chunk(1).reader(new ItemReader<String>() {
 
-                     public CustomerOrder process(String item) throws Exception {
-                           // TODO Auto-generated method stub
-                           return null;
-                     }
-              }).build();
-       }
-    
-    
+			public String read()
+					throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		}).processor(new ItemProcessor<String, CustomerOrder>() {
+
+			public CustomerOrder process(String item) throws Exception {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		}).build();
+	}
+
 }

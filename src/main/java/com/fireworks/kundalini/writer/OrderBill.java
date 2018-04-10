@@ -3,6 +3,8 @@ package com.fireworks.kundalini.writer;
 import java.io.FileOutputStream;
 import java.util.List;
 
+import org.springframework.batch.item.ItemWriter;
+
 import com.fireworks.kundalini.main.resource.CustomerAddress;
 import com.fireworks.kundalini.main.resource.CustomerOrder;
 import com.fireworks.kundalini.main.resource.OrderList;
@@ -18,7 +20,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-public class OrderBill {
+public class OrderBill implements ItemWriter<CustomerOrder>{
 
 	Document document;
 	
@@ -185,5 +187,11 @@ public class OrderBill {
 
      this.document.add(itemTable);
 
+	}
+
+	@Override
+	public void write(List<? extends CustomerOrder> arg0) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }
