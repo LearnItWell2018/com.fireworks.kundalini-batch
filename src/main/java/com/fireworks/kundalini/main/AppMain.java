@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fireworks.kundalini.main.resource.CustomerAddress;
 import com.fireworks.kundalini.main.resource.CustomerOrder;
 import com.fireworks.kundalini.writer.OrderBill;
 
