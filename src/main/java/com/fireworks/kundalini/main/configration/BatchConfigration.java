@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import com.fireworks.kundalini.main.resource.CustomerOrder;
-import com.fireworks.kundalini.task.Mailer;
+import com.fireworks.kundalini.task.MailerTasklet;
 
 @Configuration
 @EnableBatchProcessing
@@ -37,7 +37,7 @@ public class BatchConfigration {
 		return new CustomerOrder();
 	}
 
-	@Bean
+	@Bean("kundaliniJob")
 	public Job importUserJob() {
 		return jobBuilderFactory.get("importUserJob").incrementer(new RunIdIncrementer()).start(stepPDF())
 				.next(stepMail()).build();
@@ -48,7 +48,7 @@ public class BatchConfigration {
 	}
 
 	private Tasklet getResourceDetails() {
-		return new Mailer();
+		return new MailerTasklet();
 	}
 
 	private Step stepPDF() {
