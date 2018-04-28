@@ -1,17 +1,16 @@
 package com.fireworks.kundalini.main.configration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import com.fireworks.kundalini.main.resource.CustomerOrder;
+import com.fireworks.kundalini.task.CollectCustomerOrderTasklet;
 import com.fireworks.kundalini.task.MailerTasklet;
 
 @Configuration
@@ -32,40 +32,33 @@ public class BatchConfigration {
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
 
-	@Bean("customerOrder")
-	public CustomerOrder getCustomerOrder() {
-		return new CustomerOrder();
+	@Bean("customerOrders")
+	public List<CustomerOrder> getCustomerOrder() {
+		return new ArrayList<CustomerOrder> ();
 	}
-
+	
 	@Bean("kundaliniJob")
 	public Job importUserJob() {
-		return jobBuilderFactory.get("importUserJob").incrementer(new RunIdIncrementer()).start(stepPDF())
+		return jobBuilderFactory.get("kundaliniJob").incrementer(new RunIdIncrementer()).start(stepCollectGenerate())
 				.next(stepMail()).build();
 	}
 
+	@StepScope
 	private Step stepMail() {
-		return stepBuilderFactory.get("stepRead").tasklet(getResourceDetails()).build();
+		return stepBuilderFactory.get("stepRead").tasklet(sendMail()).build();
+	}
+	
+	@StepScope
+	private Step stepCollectGenerate() {
+		return stepBuilderFactory.get("stepRead").tasklet(collectCustomerOrders()).build();
 	}
 
-	private Tasklet getResourceDetails() {
+	private Tasklet sendMail() {
 		return new MailerTasklet();
 	}
-
-	private Step stepPDF() {
-		return stepBuilderFactory.get("stepPDF").<String, CustomerOrder>chunk(1).reader(new ItemReader<String>() {
-
-			public String read()
-					throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		}).processor(new ItemProcessor<String, CustomerOrder>() {
-
-			public CustomerOrder process(String item) throws Exception {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		}).build();
+	
+	private Tasklet collectCustomerOrders() {
+		return new CollectCustomerOrderTasklet();
 	}
 
 }
