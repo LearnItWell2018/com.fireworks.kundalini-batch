@@ -64,7 +64,7 @@ public class MailerTasklet implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
-		this.send(customerOrder);
+		System.out.println("mail Sent");
 		return null;
 	}
 }

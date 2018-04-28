@@ -20,6 +20,7 @@ import org.springframework.context.annotation.PropertySource;
 import com.fireworks.kundalini.main.resource.CustomerOrder;
 import com.fireworks.kundalini.task.CollectCustomerOrderTasklet;
 import com.fireworks.kundalini.task.MailerTasklet;
+import com.fireworks.kundalini.task.OrderBillTasklet;
 
 @Configuration
 @EnableBatchProcessing
@@ -34,7 +35,7 @@ public class BatchConfigration {
 
 	@Bean("customerOrders")
 	public List<CustomerOrder> getCustomerOrder() {
-		return new ArrayList<CustomerOrder> ();
+		return new ArrayList<>();
 	}
 	
 	@Bean("kundaliniJob")
@@ -50,7 +51,7 @@ public class BatchConfigration {
 	
 	@StepScope
 	private Step stepCollectGenerate() {
-		return stepBuilderFactory.get("stepRead").tasklet(collectCustomerOrders()).build();
+		return stepBuilderFactory.get("stepRead").tasklet(collectCustomerOrders()).tasklet(generateBill()).build();
 	}
 
 	private Tasklet sendMail() {
@@ -59,6 +60,10 @@ public class BatchConfigration {
 	
 	private Tasklet collectCustomerOrders() {
 		return new CollectCustomerOrderTasklet();
+	}
+	
+	private Tasklet generateBill() {
+		return new OrderBillTasklet();
 	}
 
 }
