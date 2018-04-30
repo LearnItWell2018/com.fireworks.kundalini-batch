@@ -1,4 +1,4 @@
-package com.fireworks.kundalini.main.resource;
+package com.fireworks.kundalini.crud.resource;
 
 import java.util.List;
 

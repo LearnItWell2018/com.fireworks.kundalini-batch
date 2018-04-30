@@ -1,5 +1,5 @@
 
-package com.fireworks.kundalini.main.resource;
+package com.fireworks.kundalini.crud.resource;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

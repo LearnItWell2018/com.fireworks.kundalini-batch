@@ -1,12 +1,14 @@
-package com.fireworks.kundalini.main.resource;
+package com.fireworks.kundalini.crud.resource;
 
 import java.util.List;
+
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-
+@Document(collection = "orders")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "customerMail",

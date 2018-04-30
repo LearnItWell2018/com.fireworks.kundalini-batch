@@ -11,7 +11,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import com.fireworks.kundalini.main.resource.CustomerOrder;
+import com.fireworks.kundalini.crud.resource.CustomerOrder;
 
 public class MailerTasklet implements Tasklet {
 
