@@ -90,7 +90,7 @@ public class BatchConfigration extends AbstractMongoConfiguration {
 	}
 	
 	private Tasklet sendMail() {
-		return new MailerTasklet();
+		return new MailerTasklet(env);
 	}
 	
 	@Override

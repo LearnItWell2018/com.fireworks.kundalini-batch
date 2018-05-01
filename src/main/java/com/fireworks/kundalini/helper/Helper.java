@@ -23,7 +23,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class Helper {
 
-	Environment env;
+	public Environment env;
 
 	Document document;
 
@@ -37,7 +37,7 @@ public class Helper {
 
 		try {
 			PdfWriter writer = PdfWriter.getInstance(document,
-					new FileOutputStream(env.getProperty("pdfPath") + filename + ".pdf"));
+					new FileOutputStream(env.getProperty("pdfPath") + customerOrder.getCustomerMail() + "-" + filename + ".pdf"));
 			this.document.open();
 
 			PdfPTable table = new PdfPTable(2);

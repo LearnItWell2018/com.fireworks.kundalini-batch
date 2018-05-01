@@ -1,5 +1,6 @@
 package com.fireworks.kundalini.writer;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
@@ -20,7 +21,7 @@ public class CustomerOrderWriter implements ItemWriter<CustomerOrder>{
 	}
 	
 	@Override
-	public void write(List<? extends CustomerOrder> arg0) throws Exception {
-		helper.generatePDF(arg0.get(0), Integer.toString(arg0.get(0).hashCode()));
+	public void write(List<? extends CustomerOrder> customerOrder) throws Exception {
+		helper.generatePDF(customerOrder.get(0), helper.env.getProperty("order.pdfname.pre") + new Date().getTime());
 	}
 }
