@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 import com.fireworks.kundalini.crud.resource.CustomerOrder;
-import com.fireworks.kundalini.helper.Helper;
+import com.fireworks.kundalini.helper.PDFGeneratorHelper;
 import com.fireworks.kundalini.processor.CustomerOrderProcessor;
 import com.fireworks.kundalini.task.MailerTasklet;
 import com.fireworks.kundalini.writer.CustomerOrderWriter;
@@ -46,11 +46,16 @@ public class BatchConfigration extends AbstractMongoConfiguration {
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
 
-	@Bean("kundaliniJob")
-	public Job importUserJob() {
-		return jobBuilderFactory.get("kundaliniJob").incrementer(new RunIdIncrementer()).start(stepCollectOrderAndProcess()).next(stepMAIL()).build();
+	@Bean("kundaliniJobPDF")
+	public Job kundaliniJobPDF() {
+		return jobBuilderFactory.get("kundaliniJobPDF").incrementer(new RunIdIncrementer()).start(stepCollectOrderAndProcess()).build();
 	}
 
+	@Bean("kundaliniJobMail")
+	public Job kundaliniJobMail() {
+		return jobBuilderFactory.get("kundaliniJobMail").incrementer(new RunIdIncrementer()).start(stepMAIL()).build();
+	}
+	
 	@StepScope
 	private Step stepCollectOrderAndProcess() {
 		return stepBuilderFactory.get("stepCollectOrderAndProcess").<CustomerOrder, CustomerOrder>chunk(1).reader(customerOrderRead()).processor(getOrderProcessor()).writer(getOrderWriter()).build();
@@ -104,8 +109,8 @@ public class BatchConfigration extends AbstractMongoConfiguration {
 		return env.getProperty("mongo.db");
 	}
 	
-	public Helper getHelper() {
-		return new Helper(env);
+	public PDFGeneratorHelper getHelper() {
+		return new PDFGeneratorHelper(env);
 	}
 
 }

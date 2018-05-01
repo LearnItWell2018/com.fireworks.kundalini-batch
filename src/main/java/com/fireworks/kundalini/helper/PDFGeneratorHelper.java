@@ -21,14 +21,14 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-public class Helper {
+public class PDFGeneratorHelper {
 
 	public Environment env;
 
 	Document document;
 
 	@Autowired
-	public Helper(Environment env) {
+	public PDFGeneratorHelper(Environment env) {
 		this.env = env;
 	}
 

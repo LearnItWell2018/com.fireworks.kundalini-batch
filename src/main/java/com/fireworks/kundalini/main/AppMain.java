@@ -1,5 +1,6 @@
 package com.fireworks.kundalini.main;
 
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -17,7 +18,7 @@ public class AppMain {
 		ConfigurableApplicationContext ctx= context.run(args);
 		
 		JobLauncher jobLauncher = ctx.getBean(JobLauncher.class);
-		Job job = ctx.getBean("kundaliniJob",  Job.class);
+		Job job = ctx.getBean("kundaliniJobPDF",  Job.class);
 
 		try {
 
@@ -25,8 +26,14 @@ public class AppMain {
 			JobParameters jobParameters = jobBuilder.toJobParameters();
 			JobExecution execution = jobLauncher.run(job, jobParameters);
 
-			System.out.println("Completion Status : " + execution.getStatus());
+			System.out.println("Completion Status kundaliniJobPDF : " + execution.getStatus());
 
+			if (BatchStatus.COMPLETED.equals(execution.getStatus())) {
+				job = ctx.getBean("kundaliniJobMail",  Job.class);
+				execution = jobLauncher.run(job, jobParameters);
+				System.out.println("Completion Status kundaliniJobMail : " + execution.getStatus());
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

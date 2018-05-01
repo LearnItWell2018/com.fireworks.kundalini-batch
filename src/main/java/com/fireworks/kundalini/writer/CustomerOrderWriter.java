@@ -7,16 +7,16 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fireworks.kundalini.crud.resource.CustomerOrder;
-import com.fireworks.kundalini.helper.Helper;
+import com.fireworks.kundalini.helper.PDFGeneratorHelper;
 
 
 public class CustomerOrderWriter implements ItemWriter<CustomerOrder>{
 
 	
-	Helper helper;
+	PDFGeneratorHelper helper;
 	
 	@Autowired
-	public CustomerOrderWriter(Helper helper) {
+	public CustomerOrderWriter(PDFGeneratorHelper helper) {
 		this.helper = helper;
 	}
 	

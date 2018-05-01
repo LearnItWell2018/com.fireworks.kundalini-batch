@@ -83,6 +83,9 @@ public class MailerTasklet implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
+		
+		System.out.println("execute called ");
+		
 		File pdfPath = new File(env.getProperty("pdfPath"));
 
 		for (File file : pdfPath.listFiles()) {
