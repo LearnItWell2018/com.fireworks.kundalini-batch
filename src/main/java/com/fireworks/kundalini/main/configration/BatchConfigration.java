@@ -27,6 +27,7 @@ import com.fireworks.kundalini.crud.resource.CustomerOrder;
 import com.fireworks.kundalini.helper.PDFGeneratorHelper;
 import com.fireworks.kundalini.processor.CustomerOrderProcessor;
 import com.fireworks.kundalini.task.MailerTasklet;
+import com.fireworks.kundalini.task.QrCodeGeneratorTasklet;
 import com.fireworks.kundalini.writer.CustomerOrderWriter;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -56,6 +57,11 @@ public class BatchConfigration extends AbstractMongoConfiguration {
 		return jobBuilderFactory.get("kundaliniJobMail").incrementer(new RunIdIncrementer()).start(stepMAIL()).build();
 	}
 	
+	@Bean("kundaliniJobStockGenerate")
+	public Job kundaliniJobStockGenerate() {
+		return jobBuilderFactory.get("kundaliniJobStockGenerate").incrementer(new RunIdIncrementer()).start(stepGenerateProduct()).build();
+	}
+	
 	@StepScope
 	private Step stepCollectOrderAndProcess() {
 		return stepBuilderFactory.get("stepCollectOrderAndProcess").<CustomerOrder, CustomerOrder>chunk(1).reader(customerOrderRead()).processor(getOrderProcessor()).writer(getOrderWriter()).build();
@@ -64,6 +70,11 @@ public class BatchConfigration extends AbstractMongoConfiguration {
 	@StepScope
 	private Step stepMAIL() {
 		return stepBuilderFactory.get("stepMAIL").tasklet(sendMail()).build();
+	}
+	
+	@StepScope
+	private Step stepGenerateProduct() {
+		return stepBuilderFactory.get("stepGenerateProduct").tasklet(qrCodeGen()).build();
 	}
 	
 	
@@ -96,6 +107,10 @@ public class BatchConfigration extends AbstractMongoConfiguration {
 	
 	private Tasklet sendMail() {
 		return new MailerTasklet(env);
+	}
+	
+	private Tasklet qrCodeGen() {
+		return new QrCodeGeneratorTasklet(env);
 	}
 	
 	@Override

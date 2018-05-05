@@ -1,4 +1,4 @@
-package com.fireworks.kundalini.helper;
+package com.fireworks.kundalini.task;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
@@ -15,6 +15,13 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
@@ -24,16 +31,29 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-public class QrCodeGeneratorHelper {
+public class QrCodeGeneratorTasklet implements Tasklet {
 
-	private final String DIR = "./images";
-	private final String ext = ".png";
-	private final String LOGO = "file:/C:/data/image/kundalini.jpg";
-	private final String CONTENT = "Pranab Subha Harpal Debaprasad Dibakar Suparna";
-	private final int WIDTH = 3000;
-	private final int HEIGHT = 3000;
-
-	public void generate() {
+	private String dir;
+	private String ext;
+	private String logo;
+	private String CONTENT = "Pranab Subha Harpal Debaprasad Dibakar Suparna";
+	private int width = 3000;
+	private int hight = 3000;
+	
+	Environment env;
+	
+	@Autowired
+	public QrCodeGeneratorTasklet(Environment env) {
+		this.env = env;
+		this.logo = "file:/" + env.getProperty("imagePath") + "kundalini.jpg";
+		this.dir = env.getProperty("qrCodeGenPath");
+		this.width = Integer.parseInt(env.getProperty("qrIMGWidth"));
+		this.hight = Integer.parseInt(env.getProperty("qrIMGHight"));
+		this.ext = env.getProperty("qrIMGExt");
+	}
+	
+	
+	public void generate(String qrCodeName) {
 		// Create new configuration that specifies the error correction
 		Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
@@ -44,15 +64,15 @@ public class QrCodeGeneratorHelper {
 
 		try {
 			// init directory
-			initDirectory(DIR);
+			initDirectory(dir);
 			// Create a qr code with the url as content and a size of WxH px
-			bitMatrix = writer.encode(CONTENT, BarcodeFormat.QR_CODE, WIDTH, HEIGHT, hints);
+			bitMatrix = writer.encode(CONTENT, BarcodeFormat.QR_CODE, width, hight, hints);
 
 			// Load QR image
 			BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig());
 
 			// Load logo image
-			BufferedImage overly = getOverly(LOGO);
+			BufferedImage overly = getOverly(logo);
 
 			// Calculate the delta height and width between QR code and logo
 			int deltaHeight = qrImage.getHeight() - overly.getHeight();
@@ -75,7 +95,7 @@ public class QrCodeGeneratorHelper {
 			// Write combined image as PNG to OutputStream
 			ImageIO.write(combined, "png", os);
 			// Store Image
-			Files.copy(new ByteArrayInputStream(os.toByteArray()), Paths.get(DIR + "QR_Code" + ext),
+			Files.copy(new ByteArrayInputStream(os.toByteArray()), Paths.get(dir + qrCodeName + ext),
 					StandardCopyOption.REPLACE_EXISTING);
 
 		} catch (WriterException e) {
@@ -95,8 +115,8 @@ public class QrCodeGeneratorHelper {
 	}
 
 	private MatrixToImageConfig getMatrixConfig() {
-		return new MatrixToImageConfig(QrCodeGeneratorHelper.Colors.WHITE.getArgb(),
-				QrCodeGeneratorHelper.Colors.RED.getArgb());
+		return new MatrixToImageConfig(QrCodeGeneratorTasklet.Colors.WHITE.getArgb(),
+				QrCodeGeneratorTasklet.Colors.RED.getArgb());
 	}
 
 	public enum Colors {
@@ -114,9 +134,9 @@ public class QrCodeGeneratorHelper {
 		}
 	}
 
-	public static void main(String[] args) {
-
-		new QrCodeGeneratorHelper().generate();
-
+	@Override
+	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+		this.generate("final");
+		return null;
 	}
 }
