@@ -169,7 +169,7 @@ public class PDFGeneratorHelper {
 			itemTable.setWidths(new float[] { 2, 2, 3, 1, 1, 1 });
 
 			itemTable.addCell(provideType1Cell(order.getProductId()));
-			itemTable.addCell(createImageCell(order.getItemImage()));
+			itemTable.addCell(createImageCell(processItemImage(order.getItemImage())));
 			itemTable.addCell(provideType1Cell(order.getItemDesc()));
 			itemTable.addCell(provideType1Cell(order.getItemPrice()));
 			itemTable.addCell(provideType1Cell(order.getItemCount()));
@@ -190,6 +190,11 @@ public class PDFGeneratorHelper {
 
 		this.document.add(itemTable);
 
+	}
+	
+	private String processItemImage(String imagePath) {
+		String[] imagePathlets = imagePath.split("/");
+		return imagePathlets[imagePathlets.length - 1];
 	}
 
 }

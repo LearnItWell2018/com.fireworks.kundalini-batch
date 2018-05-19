@@ -92,7 +92,7 @@ public class BatchConfigration extends AbstractMongoConfiguration {
 		customerOrderReader.setCollection("orders");
 		customerOrderReader.setName("mongoItemReader");
 		customerOrderReader.setTargetType(CustomerOrder.class);
-		customerOrderReader.setQuery("{ }");
+		customerOrderReader.setQuery("{orderStatus : 'TRIGGER_MAIL' }");
 		customerOrderReader.setSort(new HashMap<String, Direction>());
 		return customerOrderReader;
 	}
