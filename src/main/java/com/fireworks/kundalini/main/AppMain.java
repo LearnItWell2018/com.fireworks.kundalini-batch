@@ -18,39 +18,24 @@ public class AppMain {
 		ConfigurableApplicationContext ctx = context.run(args);
 
 		JobLauncher jobLauncher = ctx.getBean(JobLauncher.class);
-		Job job;
+		Job job = ctx.getBean("kundaliniJobPDF", Job.class);
+		try {
 
-		if (args == null) {
+			JobParametersBuilder jobBuilder = new JobParametersBuilder();
+			JobParameters jobParameters = jobBuilder.toJobParameters();
+			JobExecution execution = jobLauncher.run(job, jobParameters);
 
-			job = ctx.getBean("kundaliniJobPDF", Job.class);
-			try {
+			System.out.println("Completion Status kundaliniJobPDF : " + execution.getStatus());
 
-				JobParametersBuilder jobBuilder = new JobParametersBuilder();
-				JobParameters jobParameters = jobBuilder.toJobParameters();
-				JobExecution execution = jobLauncher.run(job, jobParameters);
-
-				System.out.println("Completion Status kundaliniJobPDF : " + execution.getStatus());
-
-				if (BatchStatus.COMPLETED.equals(execution.getStatus())) {
-					job = ctx.getBean("kundaliniJobMail", Job.class);
-					execution = jobLauncher.run(job, jobParameters);
-					System.out.println("Completion Status kundaliniJobMail : " + execution.getStatus());
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (BatchStatus.COMPLETED.equals(execution.getStatus())) {
+				job = ctx.getBean("kundaliniJobMail", Job.class);
+				execution = jobLauncher.run(job, jobParameters);
+				System.out.println("Completion Status kundaliniJobMail : " + execution.getStatus());
 			}
-		} else if ("kundaliniJobStockGenerate".equals(args[0])) {
-			job = ctx.getBean("kundaliniJobStockGenerate", Job.class);
-			try {
 
-				JobParametersBuilder jobBuilder = new JobParametersBuilder();
-				JobParameters jobParameters = jobBuilder.toJobParameters();
-				JobExecution execution = jobLauncher.run(job, jobParameters);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
 	}
 }
