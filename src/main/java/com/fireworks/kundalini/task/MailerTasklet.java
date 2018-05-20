@@ -2,6 +2,8 @@ package com.fireworks.kundalini.task;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
@@ -97,7 +99,7 @@ public class MailerTasklet implements Tasklet {
 
 		for (File file : pdfPath.listFiles()) {
 			String fileName = file.getName();
-			String newFileName = env.getProperty("pdfRepoPath") + fileName.split("-")[1];
+			String newFileName = env.getProperty("pdfRepoPath") + getTodaysFolder() + "/"+ fileName.split("-")[1];
 			FileUtils.copyFile(file, new File(newFileName));
 			FileUtils.forceDelete(file);
 			this.send(fileName.split("-")[0], newFileName);
@@ -115,4 +117,10 @@ public class MailerTasklet implements Tasklet {
 			customerOrderRepository.save(customerOrder);
 		}
 	}
+	
+	public String getTodaysFolder() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY");
+		return sdf.format(new Date());
+	}
+	
 }
