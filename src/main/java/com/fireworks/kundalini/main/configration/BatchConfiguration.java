@@ -22,8 +22,10 @@ import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.fireworks.kundalini.crud.resource.CustomerOrder;
+import com.fireworks.kundalini.db.CustomerOrderRepository;
 import com.fireworks.kundalini.helper.PDFGeneratorHelper;
 import com.fireworks.kundalini.processor.CustomerOrderProcessor;
 import com.fireworks.kundalini.task.MailerTasklet;
@@ -36,10 +38,14 @@ import com.mongodb.MongoClientURI;
 @EnableBatchProcessing
 @ComponentScan("com.fireworks.kundalini")
 @PropertySource("batch.properties")
-public class BatchConfigration extends AbstractMongoConfiguration {
+@EnableMongoRepositories("com.fireworks.kundalini.db")
+public class BatchConfiguration extends AbstractMongoConfiguration {
 	
 	@Autowired
 	Environment env;
+
+	@Autowired
+	CustomerOrderRepository customerOrderRepository;
 	
 	@Autowired
 	public JobBuilderFactory jobBuilderFactory;
@@ -106,7 +112,7 @@ public class BatchConfigration extends AbstractMongoConfiguration {
 	}
 	
 	private Tasklet sendMail() {
-		return new MailerTasklet(env);
+		return new MailerTasklet(env, customerOrderRepository);
 	}
 	
 	private Tasklet qrCodeGen() {
@@ -127,5 +133,5 @@ public class BatchConfigration extends AbstractMongoConfiguration {
 	public PDFGeneratorHelper getHelper() {
 		return new PDFGeneratorHelper(env);
 	}
-
+	
 }

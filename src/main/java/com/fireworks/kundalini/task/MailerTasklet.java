@@ -14,13 +14,20 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
+import com.fireworks.kundalini.crud.resource.CustomerOrder;
+import com.fireworks.kundalini.db.CustomerOrderRepository;
+
+
 public class MailerTasklet implements Tasklet {
 
 	Environment env;
+	
+	CustomerOrderRepository customerOrderRepository;
 
 	@Autowired
-	public MailerTasklet(Environment env) {
+	public MailerTasklet(Environment env, CustomerOrderRepository customerOrderRepository) {
 		this.env = env;
+		this.customerOrderRepository = customerOrderRepository;
 	}
 
 	public void send(String customerMail, String pdfPath) throws MessagingException {
@@ -94,7 +101,18 @@ public class MailerTasklet implements Tasklet {
 			FileUtils.copyFile(file, new File(newFileName));
 			FileUtils.forceDelete(file);
 			this.send(fileName.split("-")[0], newFileName);
+			String orderId = fileName.split("-")[1].replace("KUND", "");
+			orderId = orderId.replace(".pdf", "");
+			updateCustomerOrderStatus(orderId);
 		}
 		return null;
+	}
+	
+	private void updateCustomerOrderStatus(String orderId) {
+		if (customerOrderRepository.existsById(orderId)) {
+			CustomerOrder customerOrder = customerOrderRepository.findById(orderId).get();
+			customerOrder.setOrderStatus("MAIL_SENT");
+			customerOrderRepository.save(customerOrder);
+		}
 	}
 }
