@@ -48,7 +48,7 @@ public class PDFGeneratorHelper {
 			totalDetails.add(fillCustomerDetails(customerOrder));
 			table.addCell(totalDetails);
 			this.document.add(table);
-			fillItemDetails(customerOrder.getOrderDetails().getOrderList());
+			fillItemDetails(customerOrder.getOrderDetails().getOrderList(), customerOrder.getId());
 			document.close();
 			writer.close();
 		} catch (Exception e) {
@@ -140,13 +140,13 @@ public class PDFGeneratorHelper {
 		return cell;
 	}
 
-	private void fillItemDetails(List<OrderList> orderList) throws Exception {
+	private void fillItemDetails(List<OrderList> orderList,String customerOrderId) throws Exception {
 		PdfPTable itemTable;
 
 		Float total = new Float(0);
 
 		itemTable = new PdfPTable(1);
-		itemTable.addCell(provideType2Cell("Order Details", BaseColor.BLUE));
+		itemTable.addCell(provideType2Cell("Order Details :" + customerOrderId, BaseColor.BLUE));
 		this.document.add(itemTable);
 
 		itemTable = new PdfPTable(6);
@@ -168,9 +168,9 @@ public class PDFGeneratorHelper {
 
 			itemTable.setWidths(new float[] { 2, 2, 3, 1, 1, 1 });
 
-			itemTable.addCell(provideType1Cell(order.getProductId()));
+			itemTable.addCell(provideType1Cell(ProductCodeList.getProductDetails().get(order.getProductId()).getItemName()));
 			itemTable.addCell(createImageCell(processItemImage(order.getItemImage())));
-			itemTable.addCell(provideType1Cell(order.getItemDesc()));
+			itemTable.addCell(provideType1Cell(ProductCodeList.getProductDetails().get(order.getProductId()).getItemDesc()));
 			itemTable.addCell(provideType1Cell(order.getItemPrice()));
 			itemTable.addCell(provideType1Cell(order.getItemCount()));
 			total = total + Float.parseFloat(order.getItemPrice()) * Integer.parseInt(order.getItemCount());

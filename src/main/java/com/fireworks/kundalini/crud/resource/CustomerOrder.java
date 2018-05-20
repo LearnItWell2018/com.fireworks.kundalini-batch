@@ -2,6 +2,7 @@ package com.fireworks.kundalini.crud.resource;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -19,7 +20,20 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class CustomerOrder {
 
-    @JsonProperty("customerMail")
+    @Id
+    @JsonProperty
+    private String id;
+    
+    @JsonProperty
+    public String getId() {
+		return id;
+	}
+    @JsonProperty
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@JsonProperty("customerMail")
     private String customerMail;
     @JsonProperty("customerMobile")
     private String customerMobile;
