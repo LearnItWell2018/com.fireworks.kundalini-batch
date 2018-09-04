@@ -68,7 +68,7 @@ public class PDFGeneratorHelper {
 		font = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
 		Phrase mail = new Phrase("Mail Us:", font);
 		font = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.ITALIC, BaseColor.BLUE);
-		Phrase mailDetails = new Phrase(" LearnItWell2018@gmail.com", font);
+		Phrase mailDetails = new Phrase(" contact@kundalinifireworks.com", font);
 		Paragraph mailUs = new Paragraph();
 		mailUs.add(mail);
 		mailUs.add(mailDetails);
@@ -76,7 +76,7 @@ public class PDFGeneratorHelper {
 		font = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
 		Phrase callUs = new Phrase("Call Us:", font);
 		font = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.ITALIC, BaseColor.BLUE);
-		Phrase mobileDetails = new Phrase("+91 9051915545", font);
+		Phrase mobileDetails = new Phrase("+91 9163848578/9051797711", font);
 		Paragraph callUsDetails = new Paragraph();
 		callUsDetails.add(callUs);
 		callUsDetails.add(mobileDetails);
